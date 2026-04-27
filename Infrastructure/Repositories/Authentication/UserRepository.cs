@@ -1,5 +1,4 @@
-﻿using Dapper;
-using Domain.Entities.Authentication;
+﻿using Domain.Entities.Authentication;
 using Domain.Interfaces.Authentication;
 using Domain.Interfaces.Shared;
 

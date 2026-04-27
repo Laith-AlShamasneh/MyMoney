@@ -34,6 +34,12 @@ public enum UserType
     SystemAdmin = 3
 }
 
+public enum TransactionType
+{
+    Income = 1,
+    Expense = 2
+}
+
 public enum HttpResponseStatus
 {
     [Description("OK")] OK = 200,
