@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities.Authentication;
+﻿using Domain.Shared;
+
+namespace Domain.Entities.Authentication;
 
 public class RegisterVM
 {
@@ -13,6 +15,7 @@ public class RegisterVM
     public int CountryId { get; set; }
     public int CityId { get; set; }
     public string? ProfilePicture { get; set; }
+    public UserType UserType { get; set; } = UserType.Normal;
     public int LanguageId { get; set; }
 }
 

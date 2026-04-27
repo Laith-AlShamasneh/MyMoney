@@ -27,6 +27,13 @@ public enum FileUploadType
     Document = 2
 }
 
+public enum UserType
+{
+    Normal = 1,
+    Admin = 2,
+    SystemAdmin = 3
+}
+
 public enum HttpResponseStatus
 {
     [Description("OK")] OK = 200,

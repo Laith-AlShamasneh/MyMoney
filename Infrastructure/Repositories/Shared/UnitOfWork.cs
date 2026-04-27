@@ -5,35 +5,43 @@ using System.Data;
 
 namespace Infrastructure.Repositories.Shared;
 
-internal class UnitOfWork : IUnitOfWork
+internal class UnitOfWork(IConfiguration configuration) : IUnitOfWork
 {
-    private readonly IDbConnection _connection;
+    private readonly string _connectionString = configuration.GetConnectionString("SqlConnection")
+            ?? throw new InvalidOperationException("Connection string 'SqlConnection' not found in configuration.");
+    private IDbConnection? _connection;
     private IDbTransaction? _transaction;
     private IGlobalExecuters? _globalActions;
 
-    public UnitOfWork(IConfiguration configuration)
+    public IDbConnection Connection
     {
-        // Initialize the connection immediately
-        _connection = new SqlConnection(configuration.GetConnectionString("SqlConnection"));
-        _connection.Open();
+        get
+        {
+            // Lazily instantiate and open the connection only when accessed
+            _connection ??= new SqlConnection(_connectionString);
+            if (_connection.State != ConnectionState.Open)
+            {
+                _connection.Open();
+            }
+            return _connection;
+        }
     }
 
-    // Expose Connection and Transaction for external use if needed (e.g. by Repositories)
-    public IDbConnection Connection => _connection;
     public IDbTransaction? Transaction => _transaction;
 
-    // Lazy-load GlobalActions. If a transaction is started, this will be refreshed.
-    public IGlobalExecuters GlobalActions => _globalActions ??= new GlobalExecuters(_connection, _transaction);
+    // Passing the 'Connection' property ensures it opens if this is the first DB access
+    public IGlobalExecuters GlobalActions => _globalActions ??= new GlobalExecuters(Connection, _transaction);
 
     public void BeginTransaction()
     {
         // Prevent nested transactions for simplicity
-        if (_transaction != null) return;
+        if (_transaction is not null) return;
 
-        _transaction = _connection.BeginTransaction();
+        // Accessing the 'Connection' property guarantees the DB is open before beginning the transaction
+        _transaction = Connection.BeginTransaction();
 
-        // RE-INITIALIZE GlobalActions so it picks up the new Transaction
-        _globalActions = new GlobalExecuters(_connection, _transaction);
+        // RE-INITIALIZE GlobalActions so it picks up the newly created Transaction
+        _globalActions = new GlobalExecuters(Connection, _transaction);
     }
 
     public void Commit()
@@ -69,7 +77,7 @@ internal class UnitOfWork : IUnitOfWork
     {
         _transaction?.Dispose();
         _transaction = null;
-        _globalActions = null;
+        _globalActions = null; // Reset so the next DB call creates a fresh executor without a dead transaction
     }
 
     public async ValueTask DisposeAsync()
@@ -82,7 +90,7 @@ internal class UnitOfWork : IUnitOfWork
         }
         else
         {
-            _connection.Dispose();
+            _connection?.Dispose();
         }
     }
 }
