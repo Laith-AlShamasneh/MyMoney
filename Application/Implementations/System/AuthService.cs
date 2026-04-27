@@ -9,7 +9,7 @@ using Domain.Shared;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Implementations.Authentication;
+namespace Application.Implementations.System;
 
 public class AuthService(
     IConfiguration configuration,
