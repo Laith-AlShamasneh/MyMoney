@@ -40,6 +40,34 @@ public enum TransactionType
     Expense = 2
 }
 
+public enum MessageType
+{
+    // --- General ---
+    Success,
+    RetrieveSuccessfully,
+    Failed,
+    Unauthorized,
+    Forbidden,
+    InvalidInput,
+    SystemError,
+
+    // --- Authentication ---
+    RegisterSuccess,
+    LoginSuccess,
+    InvalidCredentials,
+    InvalidPassword,
+    UserNotFound,
+    EmailAlreadyExists,
+    EmailNotExists,
+    AccountDisabled,
+    AccountLocked,
+    PasswordResetSuccess,
+    UserCreated,
+    WelcomeEmailSubject,
+    PasswordResetSubject,
+    PasswordResetRequestReceived
+}
+
 public enum HttpResponseStatus
 {
     [Description("OK")] OK = 200,

@@ -1,10 +1,11 @@
 ﻿using Dapper;
 using Domain.Interfaces.Authentication;
 using Domain.Interfaces.Shared;
-using Domain.Shared;
+using Domain.Interfaces.System;
 using Infrastructure.Helpers;
 using Infrastructure.Repositories.Authentication;
 using Infrastructure.Repositories.Shared;
+using Infrastructure.Repositories.System;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure;
@@ -24,6 +25,9 @@ public static class InfrastructureDI
 
         // 3. Authentication Repositories
         services.AddScoped<IUserRepository, UserRepository>();
+
+        // 4. Systrem Repositories
+        services.AddScoped<IFinanceRepository, FinanceRepository>();
 
         return services;
     }
