@@ -9,8 +9,6 @@
   <ItemGroup>
     <Folder Include="DTOs\Requests\System\" />
     <Folder Include="DTOs\Responses\System\" />
-    <Folder Include="Implementations\Authentication\" />
-    <Folder Include="Interfaces\System\" />
   </ItemGroup>
 
   <ItemGroup>
